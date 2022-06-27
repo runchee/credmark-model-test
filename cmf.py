@@ -13,31 +13,29 @@ class CmfRun:
         self.block_number = block_number
         self.chain_id = chain_id
 
-    def model_input(self,model_slug,model_input):
+    def model_input(self,model_slug,model_input, block_number: Optional[int]= None):
         model_input = {
             "slug": model_slug,
             "chainId": self.chain_id,
-            "blockNumber": self.block_number,
+            "blockNumber": self.block_number if block_number is None else block_number,
             "input": model_input
         }
         return model_input
 
-    @st.cache
     def request(self, model_input):
-        print(model_input)
         headers = { 'Content-Type': 'application/json' }
         response = requests.post(self.gateway, data=json.dumps(model_input), headers=headers)
         if response.status_code == 201:
             res = response.json()
             try:
                 output = res['output']
-            except:
-                print(res)
+            except Exception as err:
+                print(err)
                 raise
             return output, res['chainId'], res['blockNumber']
 
-    def run_model(self, model_slug:str, model_input:dict):
-        model_input = self.model_input(model_slug, model_input)
+    def run_model(self, model_slug:str, model_input:dict, block_number: Optional[int]= None):
+        model_input = self.model_input(model_slug, model_input, block_number)
         return self.request(model_input)
 
     @staticmethod

@@ -1,0 +1,9 @@
+matplotlib
+streamlit
+numpy
+pandas
+seaborn
+streamlit_lottie
+requests
+datetime
+altair
