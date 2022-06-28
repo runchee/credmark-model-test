@@ -2,17 +2,14 @@
 
 from datetime import datetime, timedelta, timezone
 
-import altair as alt
 # from matplotlib.backends.backend_agg import RendererAgg
 # from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.random as npr
 import pandas as pd
-import plotly.express as px
 import seaborn as sns
 import streamlit as st
-from streamlit_lottie import st_lottie
 import plotly.graph_objects as go
 
 from cmf import CmfRun
@@ -22,11 +19,14 @@ from cmf import CmfRun
 
 sns.set_style('darkgrid')
 
-
 CREDMARK_GATEWAY = 'https://gateway.credmark.com/v1/model/run'
 CREDMARK_GATEWAY_LOCAL = 'http://192.168.68.122:8700/v1/model/run'
 
 st.set_page_config(layout="wide")
+
+st.title('Curve - Pool Balance Ratio')
+st.subheader('powered by Credmark Models Framework - gateway.credmark.com')
+st.text('- Kunlun Yang (kunlun@credmark.com)')
 
 gateway = st.selectbox('Gateway', [CREDMARK_GATEWAY, CREDMARK_GATEWAY_LOCAL])
 cmf = CmfRun(gateway = gateway, block_number=14836288)
@@ -131,7 +131,7 @@ def plot_pool_n(basis, n_point, pool_n, bal_ratio_func):
 
     # Plot labels at vertices
     offset = 0.25
-    fontsize = 8
+    fontsize = 12
     for nn in range(pool_n):
         ax.text(basis[nn,0]*(1+offset),
                 basis[nn,1]*(1+offset),
@@ -172,8 +172,6 @@ def plot_pool_n_data(basis, n_point, pool_n, bal_ratio_func):
 
     return data, bal_ratio
 
-st.title('Curve - Pool Balance Ratio')
-
 col1, col2, col3 = st.columns(3)
 
 def bal_2pool(xs):
@@ -192,8 +190,11 @@ with col1:
         ax.scatter(pif['a/b'], bal_2pool(pif['a/b']))
         ax.text(pif['a/b'], bal_2pool(pif['a/b']), pif['name'])
 
+    ax.text(0,0, 'All Token 1')
+    ax.text(1,0, 'All Token 2')
+
     ax.set_frame_on(False)
-    ax.set_xlabel('token ratio')
+    ax.set_xlabel('token value')
     ax.set_ylabel('balance ratio')
     ax.grid(linestyle = '--', linewidth = 0.5)
 
@@ -220,7 +221,7 @@ with col2:
         three_value = three_value / three_value.sum()
         two_value = np.dot(three_value, basis)
         ax.scatter(two_value[0], two_value[1])
-        ax.text(two_value[0], two_value[1], pif['name'])
+        ax.text(two_value[0], two_value[1], pif['name'], fontsize=12)
 
     st.pyplot(fig_3pool)
 
@@ -302,5 +303,4 @@ with col3:
 
     fig.update_layout(height=800)
     st.plotly_chart(fig, use_container_width=True, height=800)
-    st.plotly_chart(fig)
     # st.pyplot(fig_4pool)
