@@ -190,8 +190,8 @@ with col1:
         ax.scatter(pif['a/b'], bal_2pool(pif['a/b']))
         ax.text(pif['a/b'], bal_2pool(pif['a/b']), pif['name'])
 
-    ax.text(0,0, 'All Token 1')
-    ax.text(1,0, 'All Token 2')
+    ax.text(0,0, 'Token 1')
+    ax.text(1,0, 'Token 2')
 
     ax.set_frame_on(False)
     ax.set_xlabel('token value')
